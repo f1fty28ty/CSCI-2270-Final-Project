@@ -1,45 +1,53 @@
-# CSCI 2270 – Data Structures - Final Project 
+# CSCI 2270 – Data Structures - Final Project
 
 Start by carefully reading the write-up contained in `CSCI2270_Spring22_Project.pdf`.
 
-Please include a thorough description of your program's functionality. Imagine that you are publishing this for users who know nothing about this project. Also, include the names of the team-members/authors.
+Please include a thorough description of your program's functionality. Imagine that you are publishing this for users who know nothing about this project. Also, include the names of the team members/authors.
 
-Author: Miles Silveria.
+**Author:** Miles Silveria
+
+---
+
+## Introduction
 
 Hello users,
 
-    This program is the basic understandings of a Blockchain and Blockchain Technology. It has everything from adding transactions. being able to check to see is the chain is valid and be able to mine blocks and check if they print in the list of transactions.
+This program provides a basic understanding of blockchain technology, featuring functionalities such as adding transactions, validating the blockchain, mining blocks, and displaying a list of transactions. Below is a detailed description of how each component and function works together.
 
-    Here are how each function works together with each other.
+---
 
+## Program Overview
 
-    Block.cpp
+### Block.cpp
 
-    setPreviousHash(_previousHash) - Basic c++ setter function.
+1. **setPreviousHash(_previousHash)** - A standard C++ setter function.
+  
+2. **calculateHash** - Uses the `toString` function to encode with the SHA-256 library, outputting a new hash.
 
-    calculateHash -  uses the toString function to be able to encode with the sha256 library. outputs the new hash.
+3. **toString** - Aggregates all transactions into a string stream by retrieving sender, receiver, and amount from each transaction. Adds the `previousHash`, `timestamp`, and `nonce` to the string and returns it.
 
-    toString - first adds all transactions to a string stream by grabbing sender,reciever,and ammount from each transaction. then adds the previousHash, timestamp, and nonce to the string and returns the stringstream as a string.
+4. **mineBlock(difficulty)** - Sets a string based on the specified `difficulty`, then compares that to the start of the hash. For example, if `difficulty == 4`, it checks if the first 4 characters of the hash are `0000`. The nonce increments, and the hash recalculates until the condition is met.
 
-    mineBlock(difficulty) -  sets a string to the ammount in the difficulty. then compares that number to the ammount at the start of the hash. exp. difficulty == 4 so 0000 see if the first 4 chars in the hash == 0000. adds one to nonce then recalculates the hash again till the first 4 equals 0000.
+#### Helper Functions
+- **printTran** - Prints the transactions of the specified block.
+- **returnHash** - Returns the block's hash.
+- **returnPrevHash** - Returns the previous hash.
+- **transactionBalance(address)** - Calculates the balance of all transactions in the block. Adds to balance if the user receives money and subtracts if they are the sender, provided they have sufficient funds.
 
-    ///Helper Functions///
-    printTran - prints the transactions of said block
-    returnHash - returns hash
-    returnPrevHash - returns previous hash
-    transactionBalance(address) - gets the balance of all transactions in the block. if the user is receiving money then it adds to balance. if they are sending money, it removes the money if they have the money for it. returns the total balance in that block.
+### Blockchain.cpp
 
+1. **addTransaction(source, destination, coins)** - Checks if the source is from BFC. If yes, it adds the new transaction to `pending`. Otherwise, it verifies the source has enough funds by running `getBalanceOfAddress`. If not, it prints a warning; otherwise, it adds the transaction to `pending`.
 
-    Blockchain.cpp
+2. **isChainValid** - Validates the blockchain by verifying the `difficulty` string and comparing each block’s hash with its predecessor’s. Returns `false` if any mismatch occurs; otherwise, returns `true` if the chain passes both checks.
 
-    addTransaction(source, destination, coins) - checks to see if src is from BFC, if from BFC then it just adds the new transaction to pending. If it is not from BFC then first check if the src has enough money by running getBalanceOfAddress, if they dont print a warning if not then add that transaction into pending.
+3. **minePendingTransaction(minerAddress)** - Creates a new transaction block with all `pending` transactions, the current time, and the hash of the last block in the chain. Mines the new block with the specified `difficulty`, clears `pending`, and adds the mined block to the chain. Finally, adds a mining reward transaction for the miner.
 
-    isChainValid - does what mineBlock does for both the difficulty string and substring. we check if the chain is valid by comparing the current block we are on to the last by seeing if the last blocks hash matches the current blocks previousHash, if it does not match return false. move to the next and check if the current block's hash is in line with the difficulty if not then return false. If it passes both return true.
+4. **getBalanceOfAddress(address)** - Initializes balance, iterates through each block in the chain, runs `transactionBalance`, and adds to the cumulative balance. Returns the total balance.
 
-    minePendingTransaction(minerAddress) -  makes a new transaction block with the parameters of all the transactions in pending, the current time, and the hash of the last block in chain. Mine with said new transaction block with the difficulty. Clears the pending vector. ands the new transaction block into pending. runs addTransaction(BFC, minerAddress, miningReward).
+5. **prettyPrint** - Prints the hash of each block in the chain and displays the transactions using `printTran`.
 
-    getBalanceOfAddress(address) - sets a blank balance, goes through each block in the chain and runs transactionBalance on each adding that to balance. Returns Balance.
+---
 
-    prettyPrint - prints the hash of the current block in the chain then prints the transactions in that block with printTran.
+## Usage
 
-Feel Free to run ./run_app_1 and play around with the product of this project.
+Feel free to execute `./run_app_1` to experiment with the features of this blockchain project.
